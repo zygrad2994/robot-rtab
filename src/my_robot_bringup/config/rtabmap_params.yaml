@@ -1,0 +1,31 @@
+rtabmap:
+  FrameId: "base_link"
+  SubscribeDepth: true
+  SubscribeRGB: true
+  SubscribeScan: true
+  SubscribeIMU: true
+
+  Mem/IncrementalMemory: true
+  Mem/STMSize: 20
+  Mem/MaxStMemSize: 200
+  Mem/NotLinkedNodesKept: false
+
+  Kp/MaxFeatures: 400
+  Kp/DetectorStrategy: 1
+  Kp/DetectorType: 1
+
+  RGBD/LinearUpdate: 0.3
+  RGBD/AngularUpdate: 0.2
+  RGBD/MaxDepth: 4.0
+
+  Grid/CellSize: 0.06
+  Grid/RangeMax: 4.0
+
+  Reg/Strategy: 1
+  Reg/Force3DoF: true
+  Reg/MaxCorrespondenceDistance: 0.1
+
+  Cloud/DownsamplingStep: 2
+  Cloud/NormalKSearch: 10
+
+  Debug/Verbose: false
