@@ -11,6 +11,7 @@ X11UseLocalhost no
 sudo systemctl restart ssh
 
 ssh -X -Y -i "C:\Users\Admin\.ssh\rpi5_ed25" -o IdentitiesOnly=yes hailo2@192.168.100.14
+ssh -i "C:\Users\Admin\.ssh\rpi5_ed25" -o IdentitiesOnly=yes -L 5901:localhost:5901 hailo2@192.168.100.14
 
 # time-fix
 sudo apt install -y ntpdate
