@@ -1,36 +1,52 @@
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, GroupAction, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch_ros.actions import Node
+from launch.substitutions import LaunchConfiguration
 from ament_index_python.packages import get_package_share_directory
 import os
 
 def generate_launch_description():
-    pkg_share = get_package_share_directory('my_robot_bringup')
-    bringup_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(pkg_share, 'launch', 'bringup_sensors.launch.py'))
+    camera_name_arg = DeclareLaunchArgument(
+        'camera_name',
+        default_value='camera',
+        description='Namespace камеры RealSense'
     )
 
-    rtabmap_params = os.path.join(pkg_share, 'config', 'rtabmap_params.yaml')
+    camera_name = LaunchConfiguration('camera_name')
 
-    rtabmap_node = Node(
-        package='rtabmap_ros',
-        executable='rtabmap',
-        name='rtabmap',
-        output='screen',
-        parameters=[rtabmap_params],
-        arguments=['--delete_db_on_start']
-    )
+    realsense_pkg = get_package_share_directory('realsense2_camera')
+    rs_launch_path = os.path.join(realsense_pkg, 'launch', 'rs_launch.py')
 
-    rtabmapviz = Node(
-        package='rtabmap_viz',
-        executable='rtabmap_viz',
-        name='rtabmap_viz',
-        output='screen'
-    )
+    realsense_group = GroupAction([
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(rs_launch_path),
+            launch_arguments={
+                'camera_name': camera_name,
 
-    ld = LaunchDescription()
-    ld.add_action(bringup_launch)
-    ld.add_action(rtabmap_node)
-    ld.add_action(rtabmapviz)
-    return ld
+                # ВАЖНО: выравниваем глубину по цвету
+                'align_depth.enable': 'true',
+
+                # Режем всё лишнее
+                'enable_infra1': 'false',
+                'enable_infra2': 'false',
+                'enable_gyro': 'false',
+                'enable_accel': 'false',
+                'pointcloud.enable': 'false',
+
+                # Профиль под твой FPS и ресурсы
+                'rgb_camera.color_profile': '640x360x15',
+                'depth_module.depth_profile': '640x360x15',
+
+                # Синхронизированный стрим
+                'enable_sync': 'true',
+
+                # Сброс девайса при старте
+                'initial_reset': 'true',
+            }.items()
+        )
+    ])
+
+    return LaunchDescription([
+        camera_name_arg,
+        realsense_group
+    ])

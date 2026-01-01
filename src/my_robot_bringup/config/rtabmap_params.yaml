@@ -1,31 +1,60 @@
 rtabmap:
-  FrameId: "base_link"
-  SubscribeDepth: true
-  SubscribeRGB: true
-  SubscribeScan: true
-  SubscribeIMU: true
+  ros__parameters:
+    # Базовые фреймы
+    frame_id: "base_link"
+    map_frame_id: "map"
+    odom_frame_id: "odom"
 
-  Mem/IncrementalMemory: true
-  Mem/STMSize: 20
-  Mem/MaxStMemSize: 200
-  Mem/NotLinkedNodesKept: false
+    # Подписки
+    subscribe_depth: true
+    subscribe_rgb: true
+    subscribe_scan: true
+    subscribe_scan_cloud: false
+    subscribe_odom_info: true
 
-  Kp/MaxFeatures: 400
-  Kp/DetectorStrategy: 1
-  Kp/DetectorType: 1
+    # Синхронизация
+    approx_sync: true
+    approx_sync_max_interval: 0.8
+    topic_queue_size: 50
+    sync_queue_size: 50
 
-  RGBD/LinearUpdate: 0.3
-  RGBD/AngularUpdate: 0.2
-  RGBD/MaxDepth: 4.0
+    # Частота обработки
+    Rtabmap/DetectionRate: 1.0        # Гц; можно поднять до 2–3, если потянет
 
-  Grid/CellSize: 0.06
-  Grid/RangeMax: 4.0
+    # Порог обновления карты
+    RGBD/LinearUpdate: 0.1            # м
+    RGBD/AngularUpdate: 0.1           # рад
+    RGBD/OptimizeMaxError: 3.0
 
-  Reg/Strategy: 1
-  Reg/Force3DoF: true
-  Reg/MaxCorrespondenceDistance: 0.1
+    # Одометрия
+    Mem/UseOdomFeatures: true
+    RGBD/ForceOdom3DoF: true          # 2D робот
 
-  Cloud/DownsamplingStep: 2
-  Cloud/NormalKSearch: 10
+    # Грид / карта
+    Grid/CellSize: 0.05
+    Grid/RangeMax: 8.0
+    Grid/3D: true                     # 3D-оккупация; если тяжело — можно выключить
+    Grid/FromDepth: true              # строить из depth (вместе с лазером)
+    Grid/Sensor: 2                    # 0=laser,1=depth,2=laser+depth
 
-  Debug/Verbose: false
+    # Память
+    Rtabmap/TimeThr: 0                # без жёсткого лимита по времени обновления
+    Rtabmap/MemoryThr: 0              # без лимита по числу узлов (следи за RAM)
+    Mem/STMSize: 10
+    Mem/RecentWmRatio: 0.2
+    Mem/NotLinkedNodesKept: true
+
+    # Фичи / визуальная часть
+    Kp/MaxFeatures: 500
+    Kp/DetectorStrategy: 8            # GFTT/ORB
+    Vis/MaxFeatures: 1000
+    Vis/MinInliers: 20
+    Vis/EstimationType: 1             # PnP
+
+    # Луп-кложер
+    Rtabmap/LoopThr: 0.11
+    RGBD/AggressiveLoopThr: 0.05
+
+    # Логи / дебаг
+    Rtabmap/PublishStats: true
+    Rtabmap/PublishRAMUsage: false

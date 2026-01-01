@@ -7,18 +7,22 @@ import os
 def generate_launch_description():
     ld = LaunchDescription()
 
-    # RealSense
-    realsense_pkg = get_package_share_directory('realsense2_camera')
-    realsense_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(realsense_pkg, 'launch', 'rs_launch.py'))
+    # RealSense (наш профиль под SLAM)
+    my_pkg = get_package_share_directory('my_robot_bringup')
+    rs_slam_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(my_pkg, 'launch', 'rs_slam.launch.py')
+        )
     )
-    ld.add_action(realsense_launch)
+    ld.add_action(rs_slam_launch)
 
-    # YDLidar (замени имя пакета при необходимости)
+    # YDLIDAR
     try:
         ydlidar_pkg = get_package_share_directory('ydlidar_ros2_driver')
         ydlidar_launch = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(ydlidar_pkg, 'launch', 'ydlidar.launch.py'))
+            PythonLaunchDescriptionSource(
+                os.path.join(ydlidar_pkg, 'launch', 'ydlidar.launch.py')
+            )
         )
         ld.add_action(ydlidar_launch)
     except Exception:
