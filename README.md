@@ -31,7 +31,7 @@
        ros2 launch my_robot_bringup rtabmap_mapping.launch.py
    - Открыть rviz2 и добавить PointCloud2, TF, Camera, Map
    - Вести робота вручную по окружению, пока карта не будет достаточной
-
+пункты 5 и 6 опираться на скрипт 
 6) Сохранение карты
    - Сохранить базу RTAB-Map:
        ros2 service call /rtabmap/save_map std_srvs/srv/Empty "{}"
@@ -42,7 +42,7 @@
        rtabmap-databaseViewer ~/my_robot_ws/maps/my_map.db
      В GUI: File → Export → Export occupancy grid → сохранить map.png и map.yaml в ~/my_robot_ws/maps/
 
-8) Навигация (Nav2)
+8) Навигация (Nav2) В РАЗРАБОТКЕ! МЕТОД НЕ РАБОЧИЙ!
    - Запустить:
        ros2 launch my_robot_bringup nav2_bringup.launch.py
    - В rviz2: задать 2D Pose Estimate (инициализация локализации), затем 2D Nav Goal
@@ -56,3 +56,4 @@
 10) Файлы конфигурации
    - ~/my_robot_ws/src/my_robot_bringup/config/rtabmap_params.yaml
    - ~/my_robot_ws/src/my_robot_bringup/config/nav2_params.yaml
+
